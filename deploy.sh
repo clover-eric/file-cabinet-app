@@ -9,6 +9,7 @@ NC='\033[0m'
 
 # 版本号
 VERSION="1.0.0"
+REPO_URL="https://raw.githubusercontent.com/clover-eric/file-cabinet-app/main"
 
 echo -e "${GREEN}开始部署网络文件柜 v${VERSION}...${NC}"
 
@@ -26,10 +27,31 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
+# 创建临时目录
+TEMP_DIR=$(mktemp -d)
+cd "$TEMP_DIR"
+
 # 下载必要的文件
-echo -e "${BLUE}下载配置文件...${NC}"
-curl -O https://raw.githubusercontent.com/clover-eric/file-cabinet-app/main/docker-compose.yml
-curl -O https://raw.githubusercontent.com/clover-eric/file-cabinet-app/main/Dockerfile
+echo -e "${BLUE}下载源代码文件...${NC}"
+mkdir -p src/api src/context src/components public
+curl -O "${REPO_URL}/docker-compose.yml"
+curl -O "${REPO_URL}/Dockerfile"
+curl -O "${REPO_URL}/package.json"
+curl -O "${REPO_URL}/webpack.config.js"
+curl -O "${REPO_URL}/server.js"
+curl -O "${REPO_URL}/.babelrc"
+curl -O "${REPO_URL}/src/index.js" -o src/index.js
+curl -O "${REPO_URL}/src/App.js" -o src/App.js
+curl -O "${REPO_URL}/src/index.css" -o src/index.css
+curl -O "${REPO_URL}/src/api/api.js" -o src/api/api.js
+curl -O "${REPO_URL}/src/context/AuthContext.js" -o src/context/AuthContext.js
+curl -O "${REPO_URL}/public/index.html" -o public/index.html
+
+# 创建 .env 文件
+cat > .env << EOL
+REACT_APP_API_URL=http://localhost:3001
+REACT_APP_STORAGE_PATH=./storage
+EOL
 
 # 停止并删除旧容器
 echo -e "${BLUE}清理旧的部署...${NC}"
@@ -45,7 +67,7 @@ mkdir -p storage/uploads
 
 # 设置文件权限
 echo -e "${BLUE}设置文件权限...${NC}"
-chmod -R 755 storage
+chmod -R 755 .
 
 # 构建新镜像
 echo -e "${BLUE}构建 Docker 镜像...${NC}"
@@ -81,55 +103,6 @@ else
     exit 1
 fi
 
-# 创建管理脚本
-echo -e "${BLUE}创建管理脚本...${NC}"
-cat > manage.sh << 'EOL'
-#!/bin/bash
-
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m'
-
-case "$1" in
-    "start")
-        echo -e "${GREEN}启动服务...${NC}"
-        docker-compose up -d
-        ;;
-    "stop")
-        echo -e "${GREEN}停止服务...${NC}"
-        docker-compose down
-        ;;
-    "restart")
-        echo -e "${GREEN}重启服务...${NC}"
-        docker-compose restart
-        ;;
-    "logs")
-        echo -e "${GREEN}查看日志...${NC}"
-        docker logs -f cm-box
-        ;;
-    "status")
-        echo -e "${GREEN}服务状态...${NC}"
-        docker ps -f name=cm-box
-        ;;
-    "clean")
-        echo -e "${GREEN}清理服务...${NC}"
-        docker-compose down -v
-        docker rmi cm-box:latest
-        ;;
-    *)
-        echo "使用方法: ./manage.sh [命令]"
-        echo "可用命令:"
-        echo "  start   - 启动服务"
-        echo "  stop    - 停止服务"
-        echo "  restart - 重启服务"
-        echo "  logs    - 查看日志"
-        echo "  status  - 查看状态"
-        echo "  clean   - 清理服务"
-        ;;
-esac
-EOL
-
-chmod +x manage.sh
-
-echo -e "${GREEN}部署完成！${NC}"
-echo -e "使用 ${BLUE}./manage.sh${NC} 管理服务" 
+# 清理临时目录
+cd - > /dev/null
+rm -rf "$TEMP_DIR"
