@@ -12,7 +12,7 @@ WORKDIR /app
 # 只复制 package.json 和 package-lock.json
 COPY package*.json ./
 
-# 安装所有依赖（包括开发依赖，因为需要用于构建）
+# 安装所有依赖（包括开发依赖）
 RUN npm install --no-audit --no-cache
 
 # 构建阶段：构建前端
@@ -22,13 +22,26 @@ FROM base AS builder
 COPY . .
 
 # 安装所有开发依赖
-RUN npm install --save-dev webpack webpack-cli webpack-dev-server babel-loader \
-    @babel/core @babel/preset-react @babel/preset-env \
-    css-loader style-loader html-webpack-plugin \
-    dotenv-webpack
+RUN npm install --save-dev \
+    webpack \
+    webpack-cli \
+    webpack-dev-server \
+    babel-loader \
+    @babel/core \
+    @babel/preset-react \
+    @babel/preset-env \
+    css-loader \
+    style-loader \
+    html-webpack-plugin \
+    dotenv-webpack \
+    @babel/plugin-transform-runtime
+
+# 创建 .env 文件
+RUN echo "REACT_APP_API_URL=http://localhost:3001" > .env && \
+    echo "REACT_APP_STORAGE_PATH=./storage" >> .env
 
 # 构建前端
-RUN npm run build
+RUN NODE_ENV=production npm run build
 
 # 生产阶段：最终镜像
 FROM node:18-alpine
