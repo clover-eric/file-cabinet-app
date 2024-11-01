@@ -11,8 +11,8 @@ NC='\033[0m'
 VERSION="1.0.0"
 
 # 仓库配置
-GITHUB_REPO="git@github.com:username/file-cabinet-app.git"
-GITEE_REPO="git@gitee.com:username/file-cabinet-app.git"
+GITHUB_REPO="git@github.com:41419350@qq.com/file-cabinet-app.git"
+GITEE_REPO="git@gitee.com:41419350@qq.com/file-cabinet-app.git"
 
 # 检查是否安装了 Git
 if ! command -v git &> /dev/null; then
