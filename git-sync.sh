@@ -11,8 +11,8 @@ NC='\033[0m'
 VERSION="1.0.0"
 
 # 仓库配置 (修改为正确的仓库地址)
-GITHUB_REPO="git@github.com:your-username/file-cabinet-app.git"
-GITEE_REPO="git@gitee.com:your-username/file-cabinet-app.git"
+GITHUB_REPO="git@github.com:clover-eric/file-cabinet-app.git"
+GITEE_REPO="git@gitee.com:clover-eric/file-cabinet-app.git"
 
 # 检查 Git 配置
 check_git_config() {
@@ -46,12 +46,11 @@ setup_remote() {
     local remote_name=$1
     local repo_url=$2
     
-    # 检查远程仓库是否已存在
     if git remote | grep -q "^${remote_name}$"; then
-        # 更新现有远程仓库地址
+        echo -e "${BLUE}更新 ${remote_name} 远程仓库地址...${NC}"
         git remote set-url ${remote_name} ${repo_url}
     else
-        # 添加新的远程仓库
+        echo -e "${BLUE}添加 ${remote_name} 远程仓库...${NC}"
         git remote add ${remote_name} ${repo_url}
     fi
 }
