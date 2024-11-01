@@ -5,8 +5,7 @@ FROM node:18-alpine AS base
 ENV NODE_ENV=production \
     NPM_CONFIG_LOGLEVEL=error \
     NPM_CONFIG_REGISTRY=https://registry.npmmirror.com \
-    NPM_CONFIG_FETCH_TIMEOUT=300000 \
-    NPM_CONFIG_TIMEOUT=300000
+    NPM_CONFIG_FETCH_TIMEOUT=300000
 
 # 设置工作目录
 WORKDIR /app
