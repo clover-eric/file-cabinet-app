@@ -12,16 +12,19 @@ WORKDIR /app
 # 只复制 package.json 和 package-lock.json
 COPY package*.json ./
 
-# 安装所有依赖（包括开发依赖）
-RUN npm install --no-audit --no-cache
-
 # 构建阶段：构建前端
 FROM base AS builder
 
-# 复制源代码
-COPY . .
+# 设置为开发环境以安装所有依赖
+ENV NODE_ENV=development
 
-# 安装所有开发依赖
+# 安装所有依赖
+RUN npm install --no-audit --no-cache
+
+# 安装全局依赖
+RUN npm install -g webpack webpack-cli
+
+# 安装特定的开发依赖
 RUN npm install --save-dev \
     webpack \
     webpack-cli \
@@ -36,12 +39,15 @@ RUN npm install --save-dev \
     dotenv-webpack \
     @babel/plugin-transform-runtime
 
+# 复制源代码
+COPY . .
+
 # 创建 .env 文件
 RUN echo "REACT_APP_API_URL=http://localhost:3001" > .env && \
     echo "REACT_APP_STORAGE_PATH=./storage" >> .env
 
 # 构建前端
-RUN NODE_ENV=production npm run build
+RUN npm run build
 
 # 生产阶段：最终镜像
 FROM node:18-alpine
