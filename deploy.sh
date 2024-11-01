@@ -34,18 +34,22 @@ cd "$TEMP_DIR"
 # 下载必要的文件
 echo -e "${BLUE}下载源代码文件...${NC}"
 mkdir -p src/api src/context src/components public
-curl -O "${REPO_URL}/docker-compose.yml"
-curl -O "${REPO_URL}/Dockerfile"
-curl -O "${REPO_URL}/package.json"
-curl -O "${REPO_URL}/webpack.config.js"
-curl -O "${REPO_URL}/server.js"
-curl -O "${REPO_URL}/.babelrc"
-curl -O "${REPO_URL}/src/index.js" -o src/index.js
-curl -O "${REPO_URL}/src/App.js" -o src/App.js
-curl -O "${REPO_URL}/src/index.css" -o src/index.css
-curl -O "${REPO_URL}/src/api/api.js" -o src/api/api.js
-curl -O "${REPO_URL}/src/context/AuthContext.js" -o src/context/AuthContext.js
-curl -O "${REPO_URL}/public/index.html" -o public/index.html
+
+# 下载配置文件
+curl -o docker-compose.yml "${REPO_URL}/docker-compose.yml"
+curl -o Dockerfile "${REPO_URL}/Dockerfile"
+curl -o package.json "${REPO_URL}/package.json"
+curl -o webpack.config.js "${REPO_URL}/webpack.config.js"
+curl -o server.js "${REPO_URL}/server.js"
+curl -o .babelrc "${REPO_URL}/.babelrc"
+
+# 下载源代码文件
+curl -o src/index.js "${REPO_URL}/src/index.js"
+curl -o src/App.js "${REPO_URL}/src/App.js"
+curl -o src/index.css "${REPO_URL}/src/index.css"
+curl -o src/api/api.js "${REPO_URL}/src/api/api.js"
+curl -o src/context/AuthContext.js "${REPO_URL}/src/context/AuthContext.js"
+curl -o public/index.html "${REPO_URL}/public/index.html"
 
 # 创建 .env 文件
 cat > .env << EOL

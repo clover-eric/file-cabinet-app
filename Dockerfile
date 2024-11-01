@@ -11,11 +11,16 @@ WORKDIR /app
 # 只复制 package.json 和 package-lock.json（如果存在）
 COPY package*.json ./
 
-# 安装依赖
-RUN npm install --production
+# 安装所有依赖（包括开发依赖）
+RUN npm install
 
-# 复制源代码
+# 复制所有源代码和配置文件
 COPY . .
+
+# 列出文件以进行调试
+RUN ls -la && \
+    ls -la src && \
+    ls -la public
 
 # 构建前端
 RUN npm run build
