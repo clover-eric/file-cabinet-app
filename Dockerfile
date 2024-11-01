@@ -1,15 +1,14 @@
 # 基础阶段：安装依赖
 FROM node:18-alpine AS base
 
-# 设置环境变量和 npm 配置
+# 设置环境变量
 ENV NODE_ENV=production \
-    NPM_CONFIG_LOGLEVEL=error
-
-# 设置 npm 镜像
-RUN npm config set registry https://registry.npmmirror.com && \
-    npm config set cache-lock-retries 1000 && \
-    npm config set cache-lock-wait 60000 && \
-    npm config set network-timeout 60000
+    NPM_CONFIG_LOGLEVEL=error \
+    NPM_CONFIG_REGISTRY=https://registry.npmmirror.com \
+    NPM_CONFIG_FETCH_RETRIES=5 \
+    NPM_CONFIG_FETCH_RETRY_FACTOR=2 \
+    NPM_CONFIG_FETCH_RETRY_MINTIMEOUT=10000 \
+    NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT=60000
 
 # 设置工作目录
 WORKDIR /app
@@ -18,13 +17,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # 安装生产依赖
-RUN npm install --only=production --no-audit --no-optional
+RUN npm install --only=production --no-audit --prefer-offline
 
 # 构建阶段：构建前端
 FROM base AS builder
 
 # 安装所有依赖（包括开发依赖）
-RUN npm install --no-audit --no-optional
+RUN npm install --no-audit
 
 # 复制源代码
 COPY . .
