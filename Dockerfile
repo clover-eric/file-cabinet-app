@@ -20,12 +20,9 @@ FROM base AS builder
 ENV NODE_ENV=development
 
 # 安装依赖（优化安装过程）
-RUN set -eux; \
-    npm config set registry https://registry.npmmirror.com; \
-    npm config set disturl https://npmmirror.com/dist; \
-    npm install -g npm@latest; \
-    npm cache clean --force; \
-    npm install --no-audit --no-fund --prefer-offline; \
+RUN npm install -g npm@latest && \
+    npm cache clean --force && \
+    npm install --no-audit --no-fund --prefer-offline && \
     npm install --save @mui/icons-material @mui/material @emotion/react @emotion/styled
 
 # 复制源代码
