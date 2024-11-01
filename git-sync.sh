@@ -41,6 +41,38 @@ if [ "$CURRENT_BRANCH" = "HEAD" ] || [ -z "$CURRENT_BRANCH" ]; then
     git checkout -b main
 fi
 
+# 检查远程仓库是否存在
+check_remote() {
+    local remote_name=$1
+    local repo_url=$2
+    echo -e "${BLUE}检查 ${remote_name} 仓库...${NC}"
+    
+    # 测试 SSH 连接
+    if ! ssh -T git@${repo_url%%:*} 2>&1 | grep -q "success\|successfully"; then
+        echo -e "${RED}SSH 连接到 ${remote_name} 失败${NC}"
+        return 1
+    fi
+    
+    return 0
+}
+
+# 在配置远程仓库之前检查连接
+if ! check_remote "github" "github.com"; then
+    echo -e "${YELLOW}是否继续? (y/n): ${NC}"
+    read continue_setup
+    if [[ ! $continue_setup =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+fi
+
+if ! check_remote "gitee" "gitee.com"; then
+    echo -e "${YELLOW}是否继续? (y/n): ${NC}"
+    read continue_setup
+    if [[ ! $continue_setup =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+fi
+
 # 配置远程仓库
 echo -e "${BLUE}配置远程仓库...${NC}"
 # GitHub

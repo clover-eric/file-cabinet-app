@@ -1,7 +1,7 @@
 # 网络文件柜系统 (Network File Cabinet)
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/username/file-cabinet-app/releases)
+[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/clover-eric/file-cabinet-app/releases)
 [![Docker](https://img.shields.io/badge/docker-supported-blue.svg)](https://www.docker.com/)
 
 一个基于 React 和 Node.js 的现代化文件管理系统，提供简单高效的文件存储和管理解决方案。
@@ -29,7 +29,7 @@
 ## 快速开始
 
 ### 方法一：本地开发
-
+@
 1. 克隆仓库 
 
 bash
