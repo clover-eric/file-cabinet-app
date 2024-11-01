@@ -55,8 +55,14 @@ files=(
     "src/index.js"
     "src/App.js"
     "src/index.css"
+    "src/theme.js"
     "src/api/api.js"
     "src/context/AuthContext.js"
+    "src/components/Login.js"
+    "src/components/Register.js"
+    "src/components/Cabinet.js"
+    "src/components/Upload.js"
+    "src/components/PrivateRoute.js"
     "public/index.html"
 )
 
