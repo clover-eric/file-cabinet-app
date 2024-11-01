@@ -21,8 +21,11 @@ FROM base AS builder
 # 复制源代码
 COPY . .
 
-# 安装 webpack-cli（确保可以运行构建命令）
-RUN npm install -g webpack webpack-cli
+# 安装所有开发依赖
+RUN npm install --save-dev webpack webpack-cli webpack-dev-server babel-loader \
+    @babel/core @babel/preset-react @babel/preset-env \
+    css-loader style-loader html-webpack-plugin \
+    dotenv-webpack
 
 # 构建前端
 RUN npm run build
