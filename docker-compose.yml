@@ -3,18 +3,30 @@ version: '3.8'
 services:
   app:
     container_name: cm-box
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
       - "3001:3001"
     volumes:
-      - ./storage:/app/storage
+      - storage:/app/storage
     environment:
       - NODE_ENV=production
       - REACT_APP_API_URL=http://localhost:3001
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
     networks:
       - cm-box-network
 
+volumes:
+  storage:
+    name: cm-box-storage
+
 networks:
   cm-box-network:
-    name: cm-box-network 
+    name: cm-box-network

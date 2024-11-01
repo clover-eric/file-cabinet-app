@@ -271,7 +271,7 @@ app.delete('/file', async (req, res) => {
     }
     res.json({ success: true });
   } catch (error) {
-    console.error('删除���败:', error);
+    console.error('删除���:', error);
     res.status(500).json({ message: '删除文件失败' });
   }
 });
@@ -418,6 +418,11 @@ app.use('/file-info', authenticateToken);
 app.use('/upload', authenticateToken);
 app.use('/file', authenticateToken);
 app.use('/generate-api-key', authenticateToken);
+
+// 添加健康检查端点
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
+});
 
 // 启动服务器时添加错误处理
 async function start() {

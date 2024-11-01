@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack serve --mode development --open",
     "build": "webpack --mode production",
-    "server": "bash start-server.sh"
+    "server": "bash start-server.sh",
+    "prod": "node server.js"
   },
   "keywords": [],
   "author": "",
