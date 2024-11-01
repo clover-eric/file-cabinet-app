@@ -1,30 +1,30 @@
 # 基础阶段：安装依赖
 FROM node:18-alpine AS base
 
-# 设置淘宝 npm 镜像源和其他优化配置
+# 设置环境变量和 npm 配置
+ENV NODE_ENV=production \
+    NPM_CONFIG_LOGLEVEL=error
+
+# 设置 npm 镜像
 RUN npm config set registry https://registry.npmmirror.com && \
-    npm config set disturl https://npmmirror.com/dist && \
-    npm config set sass_binary_site https://npmmirror.com/mirrors/node-sass && \
-    npm config set puppeteer_download_host https://npmmirror.com/mirrors && \
-    npm config set chromedriver_cdnurl https://npmmirror.com/mirrors/chromedriver && \
-    npm config set operadriver_cdnurl https://npmmirror.com/mirrors/operadriver && \
-    npm config set phantomjs_cdnurl https://npmmirror.com/mirrors/phantomjs && \
-    npm config set electron_mirror https://npmmirror.com/mirrors/electron/ && \
-    npm config set python_mirror https://npmmirror.com/mirrors/python && \
     npm config set cache-lock-retries 1000 && \
     npm config set cache-lock-wait 60000 && \
     npm config set network-timeout 60000
 
+# 设置工作目录
 WORKDIR /app
 
 # 只复制 package.json 和 package-lock.json
 COPY package*.json ./
 
-# 安装依赖，使用 npm ci 而不是 npm install
-RUN npm ci --only=production
+# 安装生产依赖
+RUN npm install --only=production --no-audit --no-optional
 
 # 构建阶段：构建前端
 FROM base AS builder
+
+# 安装所有依赖（包括开发依赖）
+RUN npm install --no-audit --no-optional
 
 # 复制源代码
 COPY . .
@@ -35,6 +35,7 @@ RUN npm run build
 # 生产阶段：最终镜像
 FROM node:18-alpine
 
+# 设置工作目录
 WORKDIR /app
 
 # 从构建阶段复制必要的文件
