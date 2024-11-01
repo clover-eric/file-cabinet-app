@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
     ports:
       - "3000:3000"
       - "3001:3001"
@@ -14,6 +16,7 @@ services:
     environment:
       - NODE_ENV=production
       - REACT_APP_API_URL=http://localhost:3001
+      - NPM_CONFIG_LOGLEVEL=warn
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
@@ -22,6 +25,14 @@ services:
       retries: 3
     networks:
       - cm-box-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
 volumes:
   storage:
