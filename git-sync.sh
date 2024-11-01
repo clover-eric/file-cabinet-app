@@ -10,7 +10,7 @@ NC='\033[0m'
 # 版本号
 VERSION="1.0.0"
 
-# 仓库配置 (修改为你的实际仓库地址)
+# 仓库配置 (修改为你实际的用户名)
 GITHUB_REPO="git@github.com:clover-eric/file-cabinet-app.git"
 GITEE_REPO="git@gitee.com:clover-eric/file-cabinet-app.git"
 
