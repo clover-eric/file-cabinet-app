@@ -1,23 +1,19 @@
 version: '3.8'
 
 services:
-  cm-box:
-    build: .
+  app:
     container_name: cm-box
-    restart: always
+    build: .
     ports:
+      - "3000:3000"
       - "3001:3001"
     volumes:
-      - cm-box-storage:/app/storage
+      - ./storage:/app/storage
     environment:
       - NODE_ENV=production
-      - PORT=3001
+      - REACT_APP_API_URL=http://localhost:3001
     networks:
       - cm-box-network
-
-volumes:
-  cm-box-storage:
-    name: cm-box-storage
 
 networks:
   cm-box-network:

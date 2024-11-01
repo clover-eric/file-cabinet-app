@@ -26,6 +26,11 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
+# 下载必要的文件
+echo -e "${BLUE}下载配置文件...${NC}"
+curl -O https://raw.githubusercontent.com/clover-eric/file-cabinet-app/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/clover-eric/file-cabinet-app/main/Dockerfile
+
 # 停止并删除旧容器
 echo -e "${BLUE}清理旧的部署...${NC}"
 docker-compose down -v 2>/dev/null
@@ -55,14 +60,14 @@ echo -e "${BLUE}等待服务启动...${NC}"
 sleep 5
 
 # 检查容器状态
-CONTAINER_STATUS=$(docker inspect -f '{{.State.Status}}' cm-box)
-if [ "$CONTAINER_STATUS" = "running" ]; then
+if [ "$(docker ps -q -f name=cm-box)" ]; then
     echo -e "${GREEN}部署成功！${NC}"
     echo -e "${YELLOW}服务访问信息：${NC}"
-    echo -e "  - 网络文件柜: http://localhost:3001"
+    echo -e "  - 网络文件柜: http://localhost:3000"
+    echo -e "  - API 服务: http://localhost:3001"
     echo -e "${YELLOW}容器信息：${NC}"
     echo -e "  - 容器名称: cm-box"
-    echo -e "  - 存储卷: cm-box-storage"
+    echo -e "  - 存储卷: ./storage"
     echo -e "  - 网络: cm-box-network"
     echo -e "${YELLOW}管理命令：${NC}"
     echo -e "  - 查看日志: docker logs cm-box"
