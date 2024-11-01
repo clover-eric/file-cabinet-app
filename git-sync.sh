@@ -27,6 +27,19 @@ if ! git rev-parse --is-inside-work-tree &> /dev/null; then
     git init
 fi
 
+# 获取当前分支名称
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")
+if [ "$CURRENT_BRANCH" = "HEAD" ]; then
+    CURRENT_BRANCH="main"
+fi
+
+# 如果是新仓库，创建初始提交
+if ! git rev-parse HEAD &>/dev/null; then
+    echo -e "${YELLOW}创建初始提交...${NC}"
+    git add .
+    git commit -m "Initial commit"
+fi
+
 # 检查远程仓库配置
 setup_remote() {
     local remote_name=$1
@@ -122,7 +135,7 @@ git commit -m "${commit_message}"
 push_to_remote() {
     local remote=$1
     echo -e "${BLUE}推送到 ${remote}...${NC}"
-    if git push -u ${remote} master; then
+    if git push -u ${remote} "${CURRENT_BRANCH}"; then
         echo -e "${GREEN}成功推送到 ${remote}${NC}"
         return 0
     else
