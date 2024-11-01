@@ -5,10 +5,8 @@ FROM node:18-alpine AS base
 ENV NODE_ENV=production \
     NPM_CONFIG_LOGLEVEL=error \
     NPM_CONFIG_REGISTRY=https://registry.npmmirror.com \
-    NPM_CONFIG_FETCH_RETRIES=5 \
-    NPM_CONFIG_FETCH_RETRY_FACTOR=2 \
-    NPM_CONFIG_FETCH_RETRY_MINTIMEOUT=10000 \
-    NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT=60000
+    NPM_CONFIG_FETCH_TIMEOUT=300000 \
+    NPM_CONFIG_TIMEOUT=300000
 
 # 设置工作目录
 WORKDIR /app
@@ -17,13 +15,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # 安装生产依赖
-RUN npm install --only=production --no-audit --prefer-offline
+RUN npm install --only=production --no-audit --prefer-offline --no-cache
 
 # 构建阶段：构建前端
 FROM base AS builder
 
 # 安装所有依赖（包括开发依赖）
-RUN npm install --no-audit
+RUN npm install --no-audit --no-cache
 
 # 复制源代码
 COPY . .
