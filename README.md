@@ -52,7 +52,7 @@ bash
 
 npm start
 
-# 启动后端服务（新终端）
+# 启动后端服务（新��端）
 
 ./start-server.sh
 
