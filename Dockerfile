@@ -4,7 +4,8 @@ FROM node:18-alpine AS base
 # 设置环境变量
 ENV NODE_ENV=production \
     NPM_CONFIG_LOGLEVEL=error \
-    NPM_CONFIG_REGISTRY=https://registry.npmmirror.com
+    NPM_CONFIG_REGISTRY=https://registry.npmmirror.com \
+    NPM_CONFIG_CACHE=/tmp/npm-cache
 
 # 设置工作目录
 WORKDIR /app
@@ -18,8 +19,14 @@ FROM base AS builder
 # 设置为开发环境以安装所有依赖
 ENV NODE_ENV=development
 
-# 安装所有依赖
-RUN npm install --no-audit --no-cache
+# 安装依赖（优化安装过程）
+RUN set -eux; \
+    npm config set registry https://registry.npmmirror.com; \
+    npm config set disturl https://npmmirror.com/dist; \
+    npm install -g npm@latest; \
+    npm cache clean --force; \
+    npm install --no-audit --no-fund --prefer-offline; \
+    npm install --save @mui/icons-material @mui/material @emotion/react @emotion/styled
 
 # 复制源代码
 COPY . .
@@ -27,9 +34,6 @@ COPY . .
 # 创建 .env 文件
 RUN echo "REACT_APP_API_URL=http://localhost:3001" > .env && \
     echo "REACT_APP_STORAGE_PATH=./storage" >> .env
-
-# 安装额外的依赖
-RUN npm install --save @mui/icons-material @mui/material @emotion/react @emotion/styled
 
 # 构建前端
 RUN npm run build
