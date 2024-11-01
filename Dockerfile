@@ -12,17 +12,17 @@ WORKDIR /app
 # 只复制 package.json 和 package-lock.json
 COPY package*.json ./
 
-# 安装生产依赖
-RUN npm install --only=production --no-audit --prefer-offline --no-cache
+# 安装所有依赖（包括开发依赖，因为需要用于构建）
+RUN npm install --no-audit --no-cache
 
 # 构建阶段：构建前端
 FROM base AS builder
 
-# 安装所有依赖（包括开发依赖）
-RUN npm install --no-audit --no-cache
-
 # 复制源代码
 COPY . .
+
+# 安装 webpack-cli（确保可以运行构建命令）
+RUN npm install -g webpack webpack-cli
 
 # 构建前端
 RUN npm run build
