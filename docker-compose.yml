@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  cm-box:
+    build: .
+    container_name: cm-box
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      - cm-box-storage:/app/storage
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    networks:
+      - cm-box-network
+
+volumes:
+  cm-box-storage:
+    name: cm-box-storage
+
+networks:
+  cm-box-network:
+    name: cm-box-network 
