@@ -21,7 +21,6 @@ ENV NODE_ENV=development
 
 # 安装依赖（优化安装过程）
 RUN npm install -g npm@latest && \
-    npm cache clean --force && \
     npm install --no-audit --no-fund --prefer-offline && \
     npm install --save @mui/icons-material @mui/material @emotion/react @emotion/styled
 
